@@ -194,22 +194,29 @@ internal sealed class CompanionForm : Form
             if (bookmark.Label == "PRKTools") nav.Controls.Add(BuildAoUniverseMenu());
         }
         var settingsButton = CreateNavigationButton("SETTINGS");
+        settingsButton.AutoSize = false;
+        settingsButton.Size = new Size(120, 34);
+        settingsButton.Location = new Point(0, 12);
         settingsButton.Margin = new Padding(0);
+        settingsButton.Padding = new Padding(8, 0, 8, 0);
+        settingsButton.FlatAppearance.BorderSize = 1;
+        settingsButton.FlatAppearance.BorderColor = Color.FromArgb(42, 123, 138);
         settingsButton.Click += (_, _) => OpenSettings();
         var quitButton = CreateNavigationButton("QUIT");
-        quitButton.Margin = new Padding(0, 0, 12, 0);
+        quitButton.AutoSize = false;
+        quitButton.Size = new Size(94, 34);
+        quitButton.Location = new Point(134, 12);
+        quitButton.Margin = new Padding(0);
+        quitButton.FlatAppearance.BorderSize = 1;
+        quitButton.FlatAppearance.BorderColor = Color.FromArgb(42, 123, 138);
         quitButton.Click += (_, _) => Close();
-        var settingsHolder = new FlowLayoutPanel
+        var settingsHolder = new Panel
         {
             Dock = DockStyle.Fill,
-            Padding = new Padding(0, 12, 30, 10),
-            FlowDirection = FlowDirection.RightToLeft,
-            WrapContents = false,
             BackColor = Color.Transparent
         };
         settingsHolder.Controls.Add(settingsButton);
-        settingsHolder.Controls.Add(quitButton);
-        navigationArea.Controls.Add(nav, 0, 0);
+        settingsHolder.Controls.Add(quitButton);        navigationArea.Controls.Add(nav, 0, 0);
         navigationArea.Controls.Add(settingsHolder, 1, 0);
         return navigationArea;
     }
