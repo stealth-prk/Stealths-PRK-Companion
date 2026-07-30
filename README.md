@@ -10,8 +10,6 @@ PRK Companion puts the AO sites and quick math you actually use behind one hotke
 2. Extract the ZIP anywhere you like.
 3. Double-click `PRK-Companion.exe`.
 
-That’s it. The release is self-contained: players do **not** need to install the .NET SDK. Current Windows 10/11 installations already include the Microsoft Edge WebView2 Runtime used for embedded sites.
-
 ## Screenshots
 
 ### AO resources without leaving the game
