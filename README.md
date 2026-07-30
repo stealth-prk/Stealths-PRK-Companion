@@ -9,6 +9,7 @@ PRK Companion puts the AO sites and quick math you actually use behind one hotke
 1. Download [`PRK-Companion-win-x64.zip`](https://github.com/stealth-prk/PRK-Companion/releases/latest) from the latest release.
 2. Extract the ZIP anywhere you like.
 3. Double-click `PRK-Companion.exe`.
+4. Press ` to open the overlay
 
 ## Screenshots
 
@@ -43,12 +44,3 @@ PRK Companion puts the AO sites and quick math you actually use behind one hotke
 
 PRK Companion is only a Windows web companion. It does **not** inject into the AO client, read memory, automate gameplay, send input to AO, or modify the Project Rubi-Ka GUI mod.
 
-## For contributors
-
-To run from source, install the [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0), then run this from the project folder:
-
-```powershell
-dotnet run
-```
-
-Pushing a version tag triggers GitHub Actions to build the self-contained Windows ZIP release.
