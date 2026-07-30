@@ -22,35 +22,6 @@ Download `PRK-Companion-win-x64.zip` from the latest GitHub release, extract it,
 
 The release is self-contained, so end users do not need the .NET SDK. Microsoft Edge WebView2 Runtime is required for the embedded websites and is already included with current Windows 10 and Windows 11 installations.
 
-## Run from source
-
-On Windows, install the [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) and the [Microsoft Edge WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/), then run:
-
-```powershell
-dotnet run --project .\PRK-Companion\PRK-Companion.csproj
-```
-
-The app needs no access to AO itself. Press `` ` `` to bring it up, select a bookmark, then press `` ` `` or `Esc` to return to AO.
-
-## Create the Windows app
-
-Run this once from the project folder on a Windows x64 machine with the .NET 8 SDK:
-
-```powershell
-.\Publish-PRK-Companion.ps1
-```
-
-It creates `Release\PRK-Companion\PRK-Companion.exe`: a self-contained Windows app that runs by double-clicking the `.exe`, with no `dotnet run` or SDK required for the person using it. Microsoft Edge WebView2 Runtime is still required for the embedded sites.
-
-Maintainers can publish a GitHub release by pushing a version tag:
-
-```powershell
-git tag v0.24.0
-git push origin v0.24.0
-```
-
-The included GitHub Actions workflow builds the self-contained Windows app, packages `PRK-Companion-win-x64.zip`, attaches it to the release, and also keeps it as a workflow artifact.
-
 ## Intentional boundaries
 
 This project will stay a simple desktop browser companion:
