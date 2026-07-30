@@ -1,30 +1,56 @@
-# Stealth's PRK Companion
+# PRK Companion
 
-A deliberately small, standalone web companion for Project Rubi-Ka.
+> A clean, fullscreen web companion for **Anarchy Online** and **Project Rubi-Ka**.
 
-It provides an always-on-top browser window for AO resources without injecting into, reading from, or automating the game client.
+PRK Companion puts the AO sites and quick math you actually use behind one hotkey—no Alt-Tab loop, no client injection, and no interaction with the game itself.
 
-## Features
+## Download and run
 
-- Global backtick / `` ` `` hotkey to show/hide the overlay
-- Full-screen, borderless, always-on-top overlay
-- Semi-transparent dark-teal OEM+ UI inspired by the PRK GUI skin
-- Quick links for Auno, TinkerTools, PRKTools, AO-Universe, and PRK resources
-- Persistent site tabs: a visited resource stays loaded when you switch away
-- Native basic calculator for AO math
-- Web Browser tab with URL entry and DuckDuckGo search
-- Saved settings for opacity, global hotkey (Backtick, F1, F8, or F10), and overlay scale (80%–120%)
-- Normal URL bar for any other AO resource
+1. Download [`PRK-Companion-win-x64.zip`](https://github.com/stealth-prk/PRK-Companion/releases/latest) from the latest release.
+2. Extract the ZIP anywhere you like.
+3. Double-click `PRK-Companion.exe`.
 
-## Download
+That’s it. The release is self-contained: players do **not** need to install the .NET SDK. Current Windows 10/11 installations already include the Microsoft Edge WebView2 Runtime used for embedded sites.
 
-Download `PRK-Companion-win-x64.zip` from the latest GitHub release, extract it, and double-click `PRK-Companion.exe`.
+## Screenshots
 
-## Intentional boundaries
+### AO resources without leaving the game
 
-This project will stay a simple desktop browser companion:
+![PRK Companion resource overlay with Auno open](screenshots/resource-overlay.png)
 
-- No AO client injection
-- No memory reading
-- No automated gameplay or input
-- No changes to the Project Rubi-Ka GUI mod
+### Tune the overlay to your setup
+
+![PRK Companion settings for opacity, hotkey, and overlay scale](screenshots/settings.png)
+
+## What’s inside
+
+- **Global hotkey overlay** — Backtick/tilde by default, with F1, F8, and F10 options.
+- **Persistent resource tabs** — once a site is loaded, switching away and back does not reload it.
+- **AO quick links** — Auno, TinkerTools, PRKTools, Faffy’s PRK Guide, the PRK Portal, Bug Report, and AO-Universe resources.
+- **AO-Universe dropdown** — home, implants, buffing, pocket bosses, dyna-camps, and the master blitz list in one compact menu.
+- **Web Browser** — enter a URL directly or search the web from the overlay.
+- **Calculator** — normal keyboard support, chained formulas, Enter to calculate, and a visible calculation history.
+- **Settings that stick** — overlay opacity, hotkey, and 80%–120% overlay scale are saved between sessions.
+
+## Quick controls
+
+| Action | Control |
+| --- | --- |
+| Show or hide the overlay | Assigned global hotkey |
+| Return to AO | Assigned hotkey or `Esc` |
+| Close PRK Companion completely | `QUIT` |
+| Open overlay options | `SETTINGS` |
+
+## Deliberately simple and AO-safe
+
+PRK Companion is only a Windows web companion. It does **not** inject into the AO client, read memory, automate gameplay, send input to AO, or modify the Project Rubi-Ka GUI mod.
+
+## For contributors
+
+To run from source, install the [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0), then run this from the project folder:
+
+```powershell
+dotnet run
+```
+
+Pushing a version tag triggers GitHub Actions to build the self-contained Windows ZIP release.
