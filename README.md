@@ -1,6 +1,6 @@
 # Stealth's PRK Companion
 
-A deliberately small, standalone web companion for Anarchy Online / Project Rubi-Ka.
+A deliberately small, standalone web companion for Project Rubi-Ka.
 
 It provides an always-on-top browser window for AO resources without injecting into, reading from, or automating the game client.
 
