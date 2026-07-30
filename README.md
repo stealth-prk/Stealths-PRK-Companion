@@ -1,4 +1,4 @@
-# PRK Companion
+# Stealth's PRK Companion
 
 A deliberately small, standalone web companion for Anarchy Online / Project Rubi-Ka.
 
