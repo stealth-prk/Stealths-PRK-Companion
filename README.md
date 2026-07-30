@@ -4,12 +4,13 @@
 
 PRK Companion puts the AO sites and quick math you actually use behind one hotkey—no Alt-Tab loop, no client injection, and no interaction with the game itself.
 
+**` IS THE DEFAULT HOTKEY TO OPEN AND CLOSE THE OVERLAY.**
+
 ## Download and run
 
 1. Download [`PRK-Companion-win-x64.zip`](https://github.com/stealth-prk/PRK-Companion/releases/latest) from the latest release.
 2. Extract the ZIP anywhere you like.
 3. Double-click `PRK-Companion.exe`.
-4. Press ` to open the overlay
 
 ## Screenshots
 
