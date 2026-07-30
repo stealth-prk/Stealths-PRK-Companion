@@ -173,7 +173,7 @@ internal sealed class CompanionForm : Form
             BackColor = Color.FromArgb(9, 43, 54)
         };
         navigationArea.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-        navigationArea.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 170));
+        navigationArea.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 246));
 
         var nav = new FlowLayoutPanel
         {
@@ -196,6 +196,9 @@ internal sealed class CompanionForm : Form
         var settingsButton = CreateNavigationButton("SETTINGS");
         settingsButton.Margin = new Padding(0);
         settingsButton.Click += (_, _) => OpenSettings();
+        var quitButton = CreateNavigationButton("QUIT");
+        quitButton.Margin = new Padding(0, 0, 12, 0);
+        quitButton.Click += (_, _) => Close();
         var settingsHolder = new FlowLayoutPanel
         {
             Dock = DockStyle.Fill,
@@ -205,6 +208,7 @@ internal sealed class CompanionForm : Form
             BackColor = Color.Transparent
         };
         settingsHolder.Controls.Add(settingsButton);
+        settingsHolder.Controls.Add(quitButton);
         navigationArea.Controls.Add(nav, 0, 0);
         navigationArea.Controls.Add(settingsHolder, 1, 0);
         return navigationArea;
