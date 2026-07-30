@@ -20,8 +20,6 @@ It provides an always-on-top browser window for AO resources without injecting i
 
 Download `PRK-Companion-win-x64.zip` from the latest GitHub release, extract it, and double-click `PRK-Companion.exe`.
 
-The release is self-contained, so end users do not need the .NET SDK. Microsoft Edge WebView2 Runtime is required for the embedded websites and is already included with current Windows 10 and Windows 11 installations.
-
 ## Intentional boundaries
 
 This project will stay a simple desktop browser companion:
