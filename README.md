@@ -1,4 +1,4 @@
-# PRK Companion
+# Stealth's PRK Companion
 
 > A clean, fullscreen web companion for **Anarchy Online** and **Project Rubi-Ka**.
 
