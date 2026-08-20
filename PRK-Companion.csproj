@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>0.24.2</Version>
+    <Version>0.25.0</Version>
     <AssemblyName>PRK-Companion</AssemblyName>
     <Product>PRK Companion</Product>
     <Description>Windows knowledge overlay for Anarchy Online and Project Rubi-Ka.</Description>
@@ -14,5 +14,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3065.39" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\refresh.png" LogicalName="PrkCompanion.Assets.refresh.png" />
   </ItemGroup>
 </Project>

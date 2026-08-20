@@ -43,6 +43,7 @@ jobs:
           New-Item -ItemType Directory -Force .\package\PRK-Companion | Out-Null
           Copy-Item .\publish\* .\package\PRK-Companion -Recurse
           Copy-Item .\README.md .\package\PRK-Companion
+          Copy-Item .\CHANGELOG.md .\package\PRK-Companion
           Compress-Archive -Path .\package\PRK-Companion -DestinationPath .\PRK-Companion-win-x64.zip -Force
 
       - name: Upload workflow artifact
