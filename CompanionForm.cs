@@ -9,20 +9,23 @@ internal sealed class CompanionForm : Form
     private const int WmHotkey = 0x0312;
     private const uint VkOem3 = 0xC0; // ` / ~ key on a US keyboard
     private readonly Panel browserHost = new() { Dock = DockStyle.Fill };
-    private readonly Panel webToolbar = new() { Dock = DockStyle.Top, Height = 42, Visible = false, Padding = new Padding(12, 6, 12, 6), BackColor = Color.FromArgb(8, 43, 54) };
+    private readonly Panel webToolbar = new() { Dock = DockStyle.Fill, Padding = new Padding(24, 6, 20, 4), BackColor = Color.FromArgb(8, 43, 54) };
     private readonly TextBox webAddress = new() { Dock = DockStyle.Fill, BackColor = Color.FromArgb(4, 20, 26), ForeColor = Color.FromArgb(222, 250, 252), BorderStyle = BorderStyle.FixedSingle };
     private readonly CalculatorControl calculator = new() { Dock = DockStyle.Fill, Visible = false };
     private readonly Dictionary<string, WebView2> browserTabs = new();
     private readonly Dictionary<string, Button> navigationButtons = new();
+    private static readonly Image RefreshIcon = LoadRefreshIcon();
     private readonly AppSettings settings;
     private Panel? outerPanel;
     private Label? hotkeyHint;
+    private WebView2? activeBrowserTab;
 
     private static readonly Bookmark[] Bookmarks =
     {
         new("Auno", "https://auno.org/"),
         new("TinkerTools", "https://ao.tinkeringidiot.com/"),
         new("PRKTools", "https://anarchy.at/"),
+        new("PRK DB", "https://prk.gg/"),
         new("Faffy's PRK Guide", "https://docs.google.com/document/d/13HJVAcIUAGzLPYk_eLI0ZHxTyReCi3hS1ZMyINpPkhg/edit?pli=1&tab=t.0#heading=h.c6skc9wn6w10"),
         new("PRK Player Portal", "https://portal.project-rk.com/"),
         new("PRK Bug Report", "https://git.project-rk.com/prk/issues/issues"),
@@ -86,15 +89,18 @@ internal sealed class CompanionForm : Form
             Dock = DockStyle.Fill,
             BackColor = Color.FromArgb(10, 43, 54),
             ColumnCount = 1,
-            RowCount = 3
+            RowCount = 4
         };
         layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 96));
+        layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 42));
         layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 64));
         layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
         deck.Controls.Add(layout);
 
         layout.Controls.Add(BuildMasthead(), 0, 0);
-        layout.Controls.Add(BuildNavigation(), 0, 1);
+        BuildWebToolbar();
+        layout.Controls.Add(webToolbar, 0, 1);
+        layout.Controls.Add(BuildNavigation(), 0, 2);
 
         var browserFrame = new Panel
         {
@@ -104,10 +110,8 @@ internal sealed class CompanionForm : Form
             Margin = new Padding(18, 0, 18, 18)
         };
         browserFrame.Controls.Add(browserHost);
-        browserFrame.Controls.Add(webToolbar);
         browserFrame.Controls.Add(calculator);
-        BuildWebToolbar();
-        layout.Controls.Add(browserFrame, 0, 2);
+        layout.Controls.Add(browserFrame, 0, 3);
         return outer;
     }
 
@@ -178,7 +182,7 @@ internal sealed class CompanionForm : Form
         var nav = new FlowLayoutPanel
         {
             Dock = DockStyle.Fill,
-            Padding = new Padding(30, 12, 0, 10),
+            Padding = new Padding(20, 12, 0, 10),
             BackColor = Color.Transparent,
             WrapContents = false,
             AutoScroll = true
@@ -191,22 +195,21 @@ internal sealed class CompanionForm : Form
             navigationButtons.Add(bookmark.Label, button);
             nav.Controls.Add(button);
 
-            if (bookmark.Label == "PRKTools") nav.Controls.Add(BuildAoUniverseMenu());
+            if (bookmark.Label == "PRK DB") nav.Controls.Add(BuildAoUniverseMenu());
         }
         var settingsButton = CreateNavigationButton("SETTINGS");
-        settingsButton.AutoSize = false;
-        settingsButton.Size = new Size(120, 34);
-        settingsButton.Location = new Point(0, 12);
-        settingsButton.Margin = new Padding(0);
-        settingsButton.Padding = new Padding(8, 0, 8, 0);
+        settingsButton.AutoSize = true;
+        settingsButton.MinimumSize = new Size(0, 34);
+        settingsButton.Margin = new Padding(0, 0, 8, 0);
+        settingsButton.Padding = new Padding(6, 0, 6, 0);
         settingsButton.FlatAppearance.BorderSize = 1;
         settingsButton.FlatAppearance.BorderColor = Color.FromArgb(42, 123, 138);
         settingsButton.Click += (_, _) => OpenSettings();
         var quitButton = CreateNavigationButton("QUIT");
-        quitButton.AutoSize = false;
-        quitButton.Size = new Size(94, 34);
-        quitButton.Location = new Point(134, 12);
+        quitButton.AutoSize = true;
+        quitButton.MinimumSize = new Size(0, 34);
         quitButton.Margin = new Padding(0);
+        quitButton.Padding = new Padding(6, 0, 6, 0);
         quitButton.FlatAppearance.BorderSize = 1;
         quitButton.FlatAppearance.BorderColor = Color.FromArgb(42, 123, 138);
         quitButton.Click += (_, _) => Close();
@@ -215,8 +218,19 @@ internal sealed class CompanionForm : Form
             Dock = DockStyle.Fill,
             BackColor = Color.Transparent
         };
-        settingsHolder.Controls.Add(settingsButton);
-        settingsHolder.Controls.Add(quitButton);        navigationArea.Controls.Add(nav, 0, 0);
+        var actions = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Right,
+            AutoSize = true,
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = false,
+            Padding = new Padding(0, 12, 16, 10),
+            BackColor = Color.Transparent
+        };
+        actions.Controls.Add(settingsButton);
+        actions.Controls.Add(quitButton);
+        settingsHolder.Controls.Add(actions);
+        navigationArea.Controls.Add(nav, 0, 0);
         navigationArea.Controls.Add(settingsHolder, 1, 0);
         return navigationArea;
     }
@@ -226,8 +240,8 @@ internal sealed class CompanionForm : Form
         Text = text,
         AutoSize = true,
         Height = 34,
-        Margin = new Padding(0, 0, 12, 0),
-        Padding = new Padding(18, 0, 18, 0),
+        Margin = new Padding(0, 0, 8, 0),
+        Padding = new Padding(6, 0, 6, 0),
         FlatStyle = FlatStyle.Flat,
         BackColor = Color.FromArgb(11, 62, 75),
         ForeColor = Color.FromArgb(165, 220, 225),
@@ -285,7 +299,7 @@ internal sealed class CompanionForm : Form
         if (bookmark.Label == "Calculator")
         {
             browserHost.Visible = false;
-            webToolbar.Visible = false;
+            webToolbar.Enabled = false;
             calculator.Visible = true;
             calculator.BringToFront();
             SetActiveNavigation(bookmark.Label);
@@ -294,7 +308,7 @@ internal sealed class CompanionForm : Form
 
         calculator.Visible = false;
         browserHost.Visible = true;
-        webToolbar.Visible = bookmark.Label == "Web Browser";
+        webToolbar.Enabled = true;
         if (!browserTabs.TryGetValue(bookmark.Label, out var tab))
         {
             tab = new WebView2 { Dock = DockStyle.Fill, Visible = false };
@@ -308,17 +322,41 @@ internal sealed class CompanionForm : Form
             {
                 if (tab.Visible) Text = $"PRK Companion — {tab.CoreWebView2.DocumentTitle}";
             };
+            tab.CoreWebView2.SourceChanged += (_, _) =>
+            {
+                if (tab.Visible) webAddress.Text = tab.Source?.ToString() ?? string.Empty;
+            };
             tab.CoreWebView2.Navigate(bookmark.Url);
         }
 
         foreach (var openTab in browserTabs.Values) openTab.Visible = false;
         tab.Visible = true;
         tab.BringToFront();
+        activeBrowserTab = tab;
+        webAddress.Text = tab.Source?.ToString() ?? bookmark.Url;
         SetActiveNavigation(bookmark.Label);
     }
 
     private void BuildWebToolbar()
     {
+        var back = CreateBrowserButton("back");
+        back.Click += (_, _) =>
+        {
+            if (activeBrowserTab?.CoreWebView2 is { CanGoBack: true } view) view.GoBack();
+        };
+
+        var forward = CreateBrowserButton("forward");
+        forward.Click += (_, _) =>
+        {
+            if (activeBrowserTab?.CoreWebView2 is { CanGoForward: true } view) view.GoForward();
+        };
+
+        var refresh = CreateBrowserButton("refresh");
+        refresh.Click += (_, _) =>
+        {
+            if (activeBrowserTab?.CoreWebView2 is { } view) view.Reload();
+        };
+
         var go = CreateNavigationButton("GO");
         go.Dock = DockStyle.Right;
         go.AutoSize = false;
@@ -326,6 +364,11 @@ internal sealed class CompanionForm : Form
         go.Margin = new Padding(8, 0, 0, 0);
         go.Padding = new Padding(0);
         go.Text = string.Empty;
+        var goNormalColor = Color.FromArgb(11, 62, 75);
+        var goHoverColor = Color.FromArgb(16, 101, 116);
+        var goPressedColor = Color.FromArgb(23, 126, 143);
+        go.FlatAppearance.MouseOverBackColor = goHoverColor;
+        go.FlatAppearance.MouseDownBackColor = goPressedColor;
         var goCaption = new Label
         {
             Text = "GO",
@@ -336,19 +379,89 @@ internal sealed class CompanionForm : Form
             TextAlign = ContentAlignment.MiddleCenter
         };
         goCaption.Click += (_, _) => NavigateWeb();
+        goCaption.MouseEnter += (_, _) => go.BackColor = goHoverColor;
+        goCaption.MouseLeave += (_, _) => go.BackColor = goNormalColor;
+        goCaption.MouseDown += (_, _) => go.BackColor = goPressedColor;
+        goCaption.MouseUp += (_, _) => go.BackColor = goHoverColor;
         go.Controls.Add(goCaption);
+        go.MouseEnter += (_, _) => go.BackColor = goHoverColor;
+        go.MouseLeave += (_, _) => go.BackColor = goNormalColor;
         go.Click += (_, _) => NavigateWeb();
         webAddress.KeyDown += (_, e) => { if (e.KeyCode == Keys.Enter) { NavigateWeb(); e.SuppressKeyPress = true; } };
         webToolbar.Controls.Add(webAddress);
         webToolbar.Controls.Add(go);
+        webToolbar.Controls.Add(refresh);
+        webToolbar.Controls.Add(forward);
+        webToolbar.Controls.Add(back);
+    }
+
+    private Button CreateBrowserButton(string icon)
+    {
+        var button = new Button
+        {
+            Dock = DockStyle.Left,
+            AutoSize = false,
+            Width = 54,
+            Margin = new Padding(0, 0, 5, 0),
+            Padding = new Padding(0),
+            FlatStyle = FlatStyle.Flat,
+            BackColor = Color.FromArgb(11, 62, 75),
+            ForeColor = Color.FromArgb(165, 220, 225),
+            FlatAppearance = { BorderColor = Color.FromArgb(42, 123, 138) }
+        };
+        if (icon == "refresh")
+        {
+            button.Paint += (_, e) => DrawRefreshIcon(e.Graphics, button.ClientRectangle);
+        }
+        else
+        {
+            button.Paint += (_, e) => DrawBrowserIcon(e.Graphics, button.ClientRectangle, icon, button.ForeColor);
+        }
+        return button;
+    }
+
+    private static Image LoadRefreshIcon()
+    {
+        using var stream = typeof(CompanionForm).Assembly.GetManifestResourceStream("PrkCompanion.Assets.refresh.png")
+            ?? throw new InvalidOperationException("The embedded refresh icon could not be loaded.");
+        using var source = Image.FromStream(stream);
+        return new Bitmap(source);
+    }
+
+    private static void DrawRefreshIcon(Graphics graphics, Rectangle bounds)
+    {
+        var iconSize = Math.Min(bounds.Height - 8, (int)Math.Round(18f * graphics.DpiX / 96f));
+        var target = new Rectangle(
+            bounds.Left + (bounds.Width - iconSize) / 2,
+            bounds.Top + (bounds.Height - iconSize) / 2,
+            iconSize,
+            iconSize);
+
+        graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+        graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+        graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+        graphics.DrawImage(RefreshIcon, target, 0, 0, RefreshIcon.Width, RefreshIcon.Height, GraphicsUnit.Pixel);
+    }
+
+    private static void DrawBrowserIcon(Graphics graphics, Rectangle bounds, string icon, Color color)
+    {
+        graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+        using var pen = new Pen(color, 2.2f) { StartCap = System.Drawing.Drawing2D.LineCap.Round, EndCap = System.Drawing.Drawing2D.LineCap.Round };
+        var centerX = bounds.Left + bounds.Width / 2f;
+        var centerY = bounds.Top + bounds.Height / 2f;
+
+        var direction = icon == "back" ? -1 : 1;
+        graphics.DrawLine(pen, centerX - direction * 8, centerY, centerX + direction * 8, centerY);
+        graphics.DrawLine(pen, centerX + direction * 8, centerY, centerX + direction * 2, centerY - 6);
+        graphics.DrawLine(pen, centerX + direction * 8, centerY, centerX + direction * 2, centerY + 6);
     }
 
     private void NavigateWeb()
     {
         var input = webAddress.Text.Trim();
-        if (string.IsNullOrWhiteSpace(input) || !browserTabs.TryGetValue("Web Browser", out var tab) || tab.CoreWebView2 is null) return;
+        if (string.IsNullOrWhiteSpace(input) || activeBrowserTab?.CoreWebView2 is null) return;
         var target = input.Contains("://") || input.Contains('.') ? (input.Contains("://") ? input : "https://" + input) : "https://duckduckgo.com/?q=" + Uri.EscapeDataString(input);
-        tab.CoreWebView2.Navigate(target);
+        activeBrowserTab.CoreWebView2.Navigate(target);
     }
 
     private void OpenSettings()
